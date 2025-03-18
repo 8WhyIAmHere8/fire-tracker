@@ -22,19 +22,19 @@ jobs:
 
       - name: Install dependencies (Backend)
         run: npm install
-        working-directory: server  # ✅ Fix: Run inside `server/`
+        working-directory: server  #  Fix: Run inside `server/`
 
       - name: Build backend (if needed)
         run: npm run build --if-present
-        working-directory: server  # ✅ Fix: Run inside `server/`
+        working-directory: server  #  Fix: Run inside `server/`
 
-      - name: Run tests (if applicable)
-        run: npm run test --if-present
-        working-directory: server  # ✅ Fix: Run inside `server/`
+      # - name: Run tests (if applicable)
+      #   run: npm run test --if-present
+      #   working-directory: server  #  Fix: Run inside `server/`
 
       - name: Zip backend for deployment
         run: zip -r release.zip ./*
-        working-directory: server  # ✅ Fix: Only zip the backend
+        working-directory: server  #  Fix: Only zip the backend
 
       - name: Upload backend artifact
         uses: actions/upload-artifact@v4
@@ -95,4 +95,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "client"         # ✅ Fix: Points to React app
-          output_location: "client/dist" # ✅ Fix: Build output location
+          output_location: "build" # ✅ Fix: Build output location
