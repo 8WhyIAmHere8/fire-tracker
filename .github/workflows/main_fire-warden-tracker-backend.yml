@@ -95,4 +95,4 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "client"         # ✅ Fix: Points to React app
-          output_location: "client/dist" # ✅ Fix: Build output location
+          output_location: "client/build" # ✅ Fix: Build output location
