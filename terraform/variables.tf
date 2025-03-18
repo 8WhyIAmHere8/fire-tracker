@@ -32,5 +32,9 @@ variable "sql_password" {
   type        = string
   sensitive   = true
 }
-
+variable "git_tocken" {
+  description = "Github Personal Access Token"
+  type        = string
+  sensitive   = true
+}
 

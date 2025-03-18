@@ -56,7 +56,7 @@ resource "azurerm_service_plan" "warden_service_plan" {
   os_type             = "Linux"
   sku_name            = "B1" # Free tier doesn't support custom domains
 }
-
+#  Create Azure App Service (For Express Backend)
 resource "azurerm_linux_web_app" "warden_backend" {
   name                = "${var.project_name}-backend"
   resource_group_name = azurerm_resource_group.warden_rg.name
@@ -75,13 +75,29 @@ resource "azurerm_linux_web_app" "warden_backend" {
   }
 }
 
-#  Output database connection string
+#  Create Azure Static Web App (For React Frontend)
+resource "azurerm_static_web_app" "warden_frontend" {
+  name                = "${var.project_name}-frontend"
+  resource_group_name = azurerm_resource_group.warden_rg.name
+  location            = "westeurope"
+  sku_tier            = "Free"
+
+  repository_url        = "https://github.com/8WhyIAmHere8/fire-tracker"
+  repository_branch = "main"
+  repository_token =  var.git_tocken
+  
+}
+
+# 🔹 Output Connection Details
 output "database_connection_string" {
   value     = "Server=tcp:${azurerm_mssql_server.warden_sql_server.fully_qualified_domain_name},1433;Initial Catalog=${azurerm_mssql_database.warden_db.name};User ID=${var.sql_admin};Password=${var.sql_password};Encrypt=True;"
   sensitive = true
 }
 
-#  Output backend URL
 output "backend_url" {
   value = azurerm_linux_web_app.warden_backend.default_hostname
+}
+
+output "frontend_url" {
+  value = azurerm_static_web_app.warden_frontend.default_host_name
 }

@@ -2,10 +2,10 @@ require("dotenv").config();
 const sql = require("mssql");
 
 const config = {
-  user: process.env.SQL_USER,
-  password: process.env.SQL_PASSWORD,
-  server: process.env.SQL_SERVER, 
-  database: process.env.SQL_DATABASE,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  server: process.env.DATABASE_SERVER,
+  database: process.env.DATABASE_NAME,
   options: {
     encrypt: true, 
     trustServerCertificate: false,
@@ -15,9 +15,9 @@ const config = {
 const connectDB = async () => {
   try {
     await sql.connect(config);
-    console.log("Connected to Azure SQL Database");
+    console.log("✅ Connected to Azure SQL Database");
   } catch (err) {
-    console.error("Database connection failed:", err);
+    console.error("❌ Database connection failed:", err);
   }
 };
 
