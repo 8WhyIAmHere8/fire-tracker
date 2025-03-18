@@ -28,7 +28,7 @@ jobs:
           action: "upload"
           ###### ✅ Fix: Correct app and output locations ######
           app_location: "client"        # ✅ Points to React app
-          output_location: "client/build" # ✅ Built React files
+          output_location: "build" # ✅ Built React files
           ###### End of Repository/Build Configurations ######
 
   close_pull_request_job:
