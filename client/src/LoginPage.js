@@ -1,14 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
-import { loginUser, registerUser } from './api';
+import { loginUser, registerUser, fetchHealthCheck } from './api';
 import dawg from './dawg1.jpg';
 
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [backendMessage, setBackendMessage] = useState("Loading...");
   const navigate = useNavigate();
 
+  useEffect(() => {
+    async function getBackendMessage() {
+      const message = await fetchHealthCheck();
+      setBackendMessage(message);
+    }
+    getBackendMessage();
+  }, []);
   const handleRegister = async () => {
     const response = await registerUser(username, password);
     if (response.success) {
@@ -32,6 +40,7 @@ function LoginPage() {
     <div className="App">
       <header className="App-header">
         <img src={dawg} className="App-logo" alt="logo" />
+        <p>{backendMessage}</p>
         <div>
           <input
             type="text"
