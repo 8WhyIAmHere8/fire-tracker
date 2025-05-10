@@ -34,59 +34,26 @@ const Dashboard = () => {
     setSchedules(data);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const data = {
-      user_id: userId,
-      building_id: building,
-      start_time: startTime,
-      end_time: endTime
-    };
-
-    const result = await createSchedule(data);
-    if (result.message) {
-      alert("Schedule added!");
-      loadSchedules();
-    } else {
-      alert("Error adding schedule");
-    }
-  };
-
-  const handleBuildingClick = (buildingId) => {
-    setBuilding(buildingId);
-    setSelectedBuilding(buildingId);
-  };
 
   return (
     <Row className="p-4">
       {/* Left Column */}
       <Col md={4}>
+      <Row>
         <h4 className="mb-3">My Weekly Schedule</h4>
         <ScheduleTable />
-
-        <h5 className="mt-4">Schedule Location</h5>
-        
-
+      </Row>
+      <Row>
         <h5 className="mt-4">Map</h5>
         <InlineMap
-  selectedId={selectedBuilding}
-  onSelectBuilding={handleBuildingClick}
-  highlightedBuildings={highlightedBuildings}
-/>
-
-
-        <h6 className="mt-4">My Scheduled Locations</h6>
-        <ul>
-          {schedules.map(s => (
-            <li key={s.id}>
-              <strong>{s.building_name}</strong>: {new Date(s.start_time).toLocaleString()} – {new Date(s.end_time).toLocaleString()}
-            </li>
-          ))}
-        </ul>
+        highlightedBuildings={highlightedBuildings}
+      />
+      </Row>
       </Col>
-
+      <Col>
       {/* Right Column */}
-      <AllScheduleTable />
+      <AllScheduleTable setHighlightedBuildings={setHighlightedBuildings} />
+      </Col>
     </Row>
   );
 };
