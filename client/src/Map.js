@@ -1,6 +1,6 @@
 import React from 'react';
 
-const InlineMap = ({ onSelectBuilding, selectedId },) => {
+const InlineMap = ({ onSelectBuilding, selectedId, highlightedBuildings },) => {
     const buildings =[
         { id:"1", d:"M318.688 390.759L318.189 390.963L296.645 399.775L300.966 410.817L301.156 411.304L300.662 411.473L282.142 417.808L286.471 429.831L286.637 430.292L286.179 430.467L239.179 448.467L238.773 448.622L238.562 448.243L233.562 439.243L233.28 438.734L233.826 438.531L272.342 424.211L267.037 411.188L266.839 410.702L267.334 410.528L285.32 404.208L281.044 394.705L280.824 394.217L281.327 394.031L313.827 382.031L314.247 381.876L318.688 390.759Z", fill:"#60225E", stroke:"white"},
         { id:"2", d:"M563.765 511.076L575.765 518.576L576.15 518.817L575.947 519.224L574.197 522.722L584.671 526.53L585.198 526.722L575.947 545.224L575.728 545.664L575.283 545.451L550.283 533.451L549.787 533.213L550.072 532.741L563.072 511.241L563.335 510.807L563.765 511.076Z", fill:"#60225E", stroke:"white"},
@@ -34,29 +34,43 @@ const InlineMap = ({ onSelectBuilding, selectedId },) => {
         { id:"30", d:"M476 344V354H510.5V344H524V361H507.5V377H451V364.5H436V354H446.5V344H476Z", fill:"#60225E", stroke:"white"},
     ];
 
-  return (
-    <svg
-    viewBox="0 0 800 600"
-    xmlns="http://www.w3.org/2000/svg"
-    style={{ width: '100%', height: 'auto' }}
-    onClick={(e) => {
-      const id = e.target.id;
-      if (id) {
-        onSelectBuilding(id);
-      }
-    }}
-  >
-    {buildings.map(({ id, d }) => (
-      <path
-        key={id}
-        id={id}
-        d={d}
-        fill={selectedId === id ? "#FFA500" : "#60225E"} // orange if selected
-        stroke="white"
-      />
-    ))}
-  </svg>
-  );
-}
-
-export default InlineMap;
+    return (
+      <svg viewBox="0 0 800 600" style={{ width: '100%', height: 'auto' }}>
+        {buildings.map(({ id, d }) => (
+          <g key={id}>
+            <path
+              id={id}
+              d={d}
+              fill={selectedId === id ? "#FFA500" : "#60225E"}
+              stroke="white"
+              onClick={() => onSelectBuilding?.(id)}
+            />
+            {highlightedBuildings.includes(id) && (
+              <text
+                x={getBuildingCenterX(d)}
+                y={getBuildingCenterY(d)}
+                textAnchor="middle"
+                fontSize="20"
+                fill="white"
+              >
+                +
+              </text>
+            )}
+          </g>
+        ))}
+      </svg>
+    );
+  };
+  
+  function getBuildingCenterX(pathD) {
+    // Simple way: use first M command (moveTo) to estimate X
+    const match = pathD.match(/M([\d.]+)\s([\d.]+)/);
+    return match ? parseFloat(match[1]) : 0;
+  }
+  
+  function getBuildingCenterY(pathD) {
+    const match = pathD.match(/M([\d.]+)\s([\d.]+)/);
+    return match ? parseFloat(match[2]) : 0;
+  }
+  
+  export default InlineMap;

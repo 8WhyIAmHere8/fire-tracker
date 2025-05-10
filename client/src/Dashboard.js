@@ -1,31 +1,38 @@
-import React, { useState, useEffect } from 'react';
-import { createSchedule, fetchSchedules, fetchBuildings } from './api';
+import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+import { Row, Col, Form, Button } from 'react-bootstrap';
+
+import AllScheduleTable from './AllScheduleTable.js';
 import InlineMap from './Map.js';
-import ScheduleTable from './ScheduleTable';
+import ScheduleTable from './personalScheduleTable.js';
+import { createSchedule, fetchBuildings, fetchSchedules } from './api';
+
 const Dashboard = () => {
   const location = useLocation();
   const userId = location.state?.userId;
+
   const [buildings, setBuildings] = useState([]);
   const [building, setBuilding] = useState('');
+  const [highlightedBuildings, setHighlightedBuildings] = useState([]);
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [schedules, setSchedules] = useState([]);
   const [selectedBuilding, setSelectedBuilding] = useState(null);
- 
+
+  useEffect(() => {
+    if (userId) loadSchedules();
+    loadBuildings();
+  }, [userId]);
+
   const loadBuildings = async () => {
     const data = await fetchBuildings();
     setBuildings(data);
+  };
 
-  }
-    const handleBuildingClick = (buildingId) => {
-      console.log("Clicked building:", buildingId);
-      setBuilding(buildingId); 
-      setSelectedBuilding(buildingId); // Set the selected building ID
-      // If you want to pre-fill the form
-    };
-  
-
+  const loadSchedules = async () => {
+    const data = await fetchSchedules(userId);
+    setSchedules(data);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,7 +42,7 @@ const Dashboard = () => {
       start_time: startTime,
       end_time: endTime
     };
-    console.log(data);
+
     const result = await createSchedule(data);
     if (result.message) {
       alert("Schedule added!");
@@ -45,57 +52,42 @@ const Dashboard = () => {
     }
   };
 
-  const loadSchedules = async () => {
-    const data = await fetchSchedules(userId);
-    setSchedules(data);
+  const handleBuildingClick = (buildingId) => {
+    setBuilding(buildingId);
+    setSelectedBuilding(buildingId);
   };
 
-  useEffect(() => {
-    if (userId) loadSchedules();
-    loadBuildings();
-  }, [userId]);
-
   return (
-    <div>
-          <div>
-      <h2 className="text-xl font-semibold mb-4">My Weekly Schedule</h2>
-      <ScheduleTable />
-    </div>
+    <Row className="p-4">
+      {/* Left Column */}
+      <Col md={4}>
+        <h4 className="mb-3">My Weekly Schedule</h4>
+        <ScheduleTable />
 
-      <h2>Schedule Location</h2>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Building:
-          <select value={building} onChange={(e) => setBuilding(e.target.value)}>
-  {buildings.map((b) => (
-    <option key={b.id} value={b.id}>{b.name}</option>
-  ))}
-</select>
-        </label><br/>
-        <label>
-          Start Time:
-          <input type="datetime-local" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
-        </label><br/>
-        <label>
-          End Time:
-          <input type="datetime-local" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
-        </label><br/>
-        <button type="submit">Submit</button>
-      </form>
-      <div>
-      <InlineMap 
-      selectedId={selectedBuilding}
-      onSelectBuilding={handleBuildingClick} />
-      </div>
-      <h3>My Scheduled Locations</h3>
-      <ul>
-        {schedules.map(s => (
-          <li key={s.id}>
-            <strong>{s.building_name}</strong>: {new Date(s.start_time).toLocaleString()} - {new Date(s.end_time).toLocaleString()}
-          </li>
-        ))}
-      </ul>
-    </div>
+        <h5 className="mt-4">Schedule Location</h5>
+        
+
+        <h5 className="mt-4">Map</h5>
+        <InlineMap
+  selectedId={selectedBuilding}
+  onSelectBuilding={handleBuildingClick}
+  highlightedBuildings={highlightedBuildings}
+/>
+
+
+        <h6 className="mt-4">My Scheduled Locations</h6>
+        <ul>
+          {schedules.map(s => (
+            <li key={s.id}>
+              <strong>{s.building_name}</strong>: {new Date(s.start_time).toLocaleString()} – {new Date(s.end_time).toLocaleString()}
+            </li>
+          ))}
+        </ul>
+      </Col>
+
+      {/* Right Column */}
+      <AllScheduleTable />
+    </Row>
   );
 };
 

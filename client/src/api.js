@@ -34,20 +34,23 @@ export async function loginUser(username, password) {
     }
     return data;
 }
-export async function createSchedule(data) {
-  const res = await fetch(`${API_BASE_URL}/api/schedules/add`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
+export async function createSchedule(entries) {
+  const res = await fetch(`${API_BASE_URL}/api/scheduleEntries/add`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(entries),
   });
   return res.json();
 }
 
-export async function fetchSchedules(userId) {
-  const res = await fetch(`${API_BASE_URL}/api/schedules/${userId}`);
+export async function fetchSchedules(week, userId) {
+  const res = await fetch(`${API_BASE_URL}/api/scheduleEntries/${userId}/${week}`);
   return res.json();
 }
-
+export async function fetchSchedulesByZone(week) {
+  const res = await fetch(`${API_BASE_URL}/api/scheduleEntries/zones/${week}`);
+  return res.json();
+}
 export async function fetchBuildings() {
   const res = await fetch(`${API_BASE_URL}/api/buildings`);
   return res.json();
