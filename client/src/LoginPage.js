@@ -29,8 +29,8 @@ function LoginPage() {
   const handleLogin = async () => {
     const response = await loginUser(username, password);
     if (response.token) {
-      alert("Login successful!");
-      navigate('/dashboard'); //  Now useNavigate() will work correctly!
+      alert("Login successful! id: " + response.userId);
+      navigate('/dashboard', { state: { userId: response.userId } });
     } else {
       alert("Login failed!");
     }

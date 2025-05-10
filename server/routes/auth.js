@@ -15,7 +15,7 @@ router.post(
     "/register",
     [
         body("username").isLength({ min: 3 }),
-        body("password").isLength({ min: 6 }),
+        body("password").isLength({ min: 1 }),
     ],
     async (req, res) => {
         const errors = validationResult(req);
@@ -65,7 +65,7 @@ router.post(
       if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
 
       const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: "1h" });
-      res.json({ token });
+      res.json({ token, userId: user.id });
     } catch (error) {
       res.status(500).json({ error: "Database error" });
     }
