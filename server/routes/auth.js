@@ -13,15 +13,17 @@ const JWT_SECRET = process.env.JWT_SECRET || "supersecretkey";
 //  Register User
 router.post(
     "/register",
-    [
-        body("username").isLength({ min: 3 }),
-        body("password").isLength({ min: 1 }),
+    [   
+        body("username").notEmpty(),
+        body("password").isLength({ min: 6 }),
+        body("FullName").notEmpty(),
+        body("staffNumber").notEmpty(),
     ],
     async (req, res) => {
         const errors = validationResult(req);
+        console.log(req.body)
         if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-
-        const { username, password } = req.body;
+        const {username, staffNumber, FullName, password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
@@ -32,7 +34,9 @@ router.post(
             .request()
             .input("username", sql.NVarChar, username)
             .input("password_hash", sql.NVarChar, hashedPassword)
-            .query("INSERT INTO users (username, password_hash) VALUES (@username, @password_hash)");
+            .input("staffNumber", sql.VarChar, staffNumber)
+            .input("FullName", sql.VarChar, FullName)
+            .query("INSERT INTO users (username, password_hash, staffNumber, FullName) VALUES (@username, @password_hash, @staffNumber, @FullName)");
         res.status(201).json({ message: "User registered successfully!" });
         console.log("3", result);
         } catch (error) {

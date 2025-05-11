@@ -109,7 +109,7 @@ const loadBuildings = async () => {
                   >
                     {isEditing ? (
                       <select
-                        autoFocus
+                        autoFocust
                         className="w-full text-sm p-1 border rounded"
                         onChange={handleChange}
                         onBlur={() => setEditing(null)}

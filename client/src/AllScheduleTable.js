@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { createSchedule, fetchBuildings, fetchSchedulesByZone } from './api';
-import { Col, Row, Card } from 'react-bootstrap';
+import { Col, Row, Accordion } from 'react-bootstrap';
 import InlineMap from './Map';
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -83,67 +83,68 @@ const handleSlotClick = (day, slot) => {
 
   return (
     <Row>
-      <Col md={7}>
+      <Col>
         <h4 className="mb-3">University Schedule</h4>
-        <Row>
-          {days.map(day => (
-            <Col key={day} md={6} className="mb-4">
-              <Card>
-                <Card.Header>{day}</Card.Header>
-                <Card.Body className="p-0">
-                  <table className="table table-bordered mb-0 text-center text-sm">
-                    <thead className="table-light">
-                      <tr>
-                        <th>Time</th>
-                        {Object.keys(zoneMap).map(zone => (
-                          <th key={zone}>Zone {zone}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {slots.map(slot => (
-                        <tr
-                          key={slot}
-                          onClick={() => handleSlotClick(day, slot)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <td>{slot}</td>
-                          {Object.keys(zoneMap).map(zone => {
-                            const usersInZone =
-                              allScheduleData[day]?.[slot]?.[zone] || [];
-                            return (
-                              <td key={zone}>
-                                {usersInZone.length ? (
-                                  usersInZone.map(u => (
-                                    <div
-                                      key={u.id}
-                                      style={{
-                                        cursor: "pointer",
-                                        color: "#007bff"
-                                      }}
-                                      onClick={(e) => onUserClick(e, u.buildingId)}
-                                    >
-                                      {u.name}
-                                    </div>
-                                  ))
-                                ) : (
-                                  "—"
-                                )}
-                              </td>
-                            );
-                          })}
-                        </tr>
+        <Accordion defaultActiveKey="0" alwaysOpen>
+          {days.map((day, index) => (
+            <Accordion.Item eventKey={index.toString()} key={day} className="mb-3">
+              <Accordion.Header>{day}</Accordion.Header>
+              <Accordion.Body className="p-0">
+                <table className="table table-bordered mb-0 text-center text-sm">
+                  <thead className="table-light">
+                    <tr>
+                      <th>Time</th>
+                      {Object.keys(zoneMap).map(zone => (
+                        <th key={zone}>Zone {zone}</th>
                       ))}
-                    </tbody>
-                  </table>
-                </Card.Body>
-              </Card>
-            </Col>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {slots.map(slot => (
+                      <tr
+                        key={slot}
+                        onClick={() => handleSlotClick(day, slot)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        <td>{slot}</td>
+                        {Object.keys(zoneMap).map(zone => {
+                          const usersInZone = allScheduleData[day]?.[slot]?.[zone] || [];
+                          return (
+                            <td key={zone}>
+                              {usersInZone.length ? (
+                                usersInZone.map(u => (
+                                  <div
+                                    key={u.id}
+                                    style={{
+                                      cursor: "pointer",
+                                      color: "#007bff"
+                                    }}
+                                    onClick={(e) => {
+                                      e.stopPropagation(); // prevent row click
+                                      onUserClick(e, u.buildingId);
+                                    }}
+                                  >
+                                    {u.name}
+                                  </div>
+                                ))
+                              ) : (
+                                "—"
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </Accordion.Body>
+            </Accordion.Item>
           ))}
-        </Row>
+        </Accordion>
       </Col>
     </Row>
   );
 };
+  
 
 export default AllScheduleTable;

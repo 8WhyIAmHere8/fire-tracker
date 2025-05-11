@@ -33,22 +33,29 @@ const Dashboard = () => {
     const data = await fetchSchedules(userId);
     setSchedules(data);
   };
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    window.location.href = '/';
+  };
+
+
 
 
   return (
     <Row className="p-4">
       {/* Left Column */}
-      <Col md={4}>
-      <Row>
-        <h4 className="mb-3">My Weekly Schedule</h4>
+      <Col md={5}>
+       <Button variant="primary" onClick={handleLogout}>
+          Logout
+        </Button>
+        <h4 className="mt-4">My Schedule</h4>
+        <h4 >My Weekly Schedule</h4>
         <ScheduleTable />
-      </Row>
-      <Row>
+      
         <h5 className="mt-4">Map</h5>
         <InlineMap
         highlightedBuildings={highlightedBuildings}
       />
-      </Row>
       </Col>
       <Col>
       {/* Right Column */}

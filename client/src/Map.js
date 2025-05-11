@@ -1,5 +1,5 @@
 import React from 'react';
-
+import uoWmap from './uoWmap.PNG'; 
 const InlineMap = ({ highlightedBuildings },) => {
     console.log("highlightedBuildings", highlightedBuildings);   
     const buildings =[
@@ -35,33 +35,50 @@ const InlineMap = ({ highlightedBuildings },) => {
         { id:"30", d:"M476 344V354H510.5V344H524V361H507.5V377H451V364.5H436V354H446.5V344H476Z", fill:"#60225E", stroke:"white"},
     ];
 
-    return (
-      <svg viewBox="0 0 800 600" style={{ width: '100%', height: 'auto' }}>
-        {buildings.map(({ id, d }) => (
-          <g key={id}>
-            <path
-              id={String(id)}
-              d={d}
-              fill={ highlightedBuildings.includes(String(id))
-                ? "#FFA500"   // highlighted color
-                : "#60225E" } // default
-        stroke="white"
-              
-            />
-            {highlightedBuildings && highlightedBuildings.includes(id) && (
-              <text
-                x={getBuildingCenterX(d)}
-                y={getBuildingCenterY(d)}
-                textAnchor="middle"
-                fontSize="20"
-                fill="white"
-              >
-                +
-              </text>
-            )}
-          </g>
-        ))}
-      </svg>
+    return  (
+      <div
+        style={{
+          width: '100%',
+          backgroundImage: `url(${uoWmap})`,
+          backgroundSize: '93% 92%',
+
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'top left',
+
+          zIndex: 0,
+        }}
+      >
+        <svg
+          viewBox="0 0 800 600"
+          style={{ width: '110%', height: 'auto', display: 'block' }}
+        >
+          {buildings.map(({ id, d }) => (
+            <g key={id}>
+              <path
+                id={String(id)}
+                d={d}
+                fill={
+                  highlightedBuildings.includes(String(id))
+                    ? "#FFA500"
+                    : "#60225E"
+                }
+                stroke="white"
+              />
+              {highlightedBuildings.includes(id) && (
+                <text
+                  x={getBuildingCenterX(d)}
+                  y={getBuildingCenterY(d)}
+                  textAnchor="middle"
+                  fontSize="20"
+                  fill="white"
+                >
+                  +
+                </text>
+              )}
+            </g>
+          ))}
+        </svg>
+      </div>
     );
   };
   
