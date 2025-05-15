@@ -4,6 +4,7 @@ import { createSchedule, fetchBuildings, fetchSchedulesByZone } from './api';
 import { Col, Row, Accordion } from 'react-bootstrap';
 import InlineMap from './Map';
 
+
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const slots = ["9-11", "11-13", "13-15", "15-17"];
 
@@ -22,12 +23,13 @@ const AllScheduleTable = ({ setHighlightedBuildings }) => {
   const [buildings, setBuildings] = useState([]);
   const [selectedBuildingId, setSelectedBuildingId] = useState(null);
   const [allScheduleData, setSchedule] = useState({});
+  const [selectedWeek, setSelectedWeek] = useState();
 
   useEffect(() => {
     const loadAll = async () => {
       const [buildingData, scheduleData] = await Promise.all([
         fetchBuildings(),
-        fetchSchedulesByZone("2025-W20")
+        fetchSchedulesByZone(selectedWeek)
       ]);
 
       setBuildings(buildingData);
@@ -57,7 +59,7 @@ const AllScheduleTable = ({ setHighlightedBuildings }) => {
     };
 
     loadAll();
-  }, [setHighlightedBuildings]);
+  }, [setHighlightedBuildings, selectedWeek]);
 
 const handleSlotClick = (day, slot) => {
     const slotData = allScheduleData[day]?.[slot] || {};
@@ -85,6 +87,13 @@ const handleSlotClick = (day, slot) => {
     <Row>
       <Col>
         <h4 className="mb-3">University Schedule</h4>
+        <label className="mr-2 font-medium">Select week:</label>
+      <input
+        type="week"
+        value={selectedWeek}
+        onChange={e => setSelectedWeek(e.target.value)}
+        className="border p-1 rounded"
+      />
         <Accordion defaultActiveKey="0" alwaysOpen>
           {days.map((day, index) => (
             <Accordion.Item eventKey={index.toString()} key={day} className="mb-3">
