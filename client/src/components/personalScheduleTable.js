@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Col, Form, Row, Table } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import { createSchedule, fetchBuildings, fetchSchedules } from '../api';
-import { get } from 'mongoose';
+import { createSchedule, fetchBuildings, fetchSchedules } from '../api'
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const slots = ["9-11", "11-13", "13-15", "15-17"];
