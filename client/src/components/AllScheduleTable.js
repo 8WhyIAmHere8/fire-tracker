@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { Accordion, Col, Row, Form } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
@@ -83,7 +84,7 @@ const AllScheduleTable = ({ setHighlightedBuildings }) => {
     };
 
     loadAll();
-  }, [setHighlightedBuildings, selectedWeek]);
+  }, [setHighlightedBuildings, selectedWeek, userId]);
 
 const handleSlotClick = (day, slot) => {
     const slotData = allScheduleData[day]?.[slot] || {};

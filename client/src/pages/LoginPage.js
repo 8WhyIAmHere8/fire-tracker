@@ -7,7 +7,7 @@ import dawg from '../logo.png';
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [backendMessage, setBackendMessage] = useState("Loading...");
+  const [setBackendMessage] = useState("Loading...");
   const navigate = useNavigate();
 
   useEffect(() => {

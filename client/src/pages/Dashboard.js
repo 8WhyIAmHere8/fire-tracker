@@ -1,23 +1,21 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 
 import { fetchBuildings, fetchSchedules } from '../api.js';
-import AllScheduleTable from '../components/AllScheduleTable.js';
 import InlineMap from '../components/Map.js';
 import ScheduleTable from '../components/personalScheduleTable.js';
+import AllScheduleTable from '../components/AllScheduleTable.js';
 
 const Dashboard = () => {
   const location = useLocation();
   const userId = location.state?.userId;
 
   const [buildings, setBuildings] = useState([]);
-  const [building, setBuilding] = useState('');
   const [highlightedBuildings, setHighlightedBuildings] = useState([]);
   const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
   const [schedules, setSchedules] = useState([]);
-  const [selectedBuilding, setSelectedBuilding] = useState(null);
 
   useEffect(() => {
     if (userId) loadSchedules();
