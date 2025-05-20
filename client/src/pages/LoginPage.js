@@ -26,6 +26,7 @@ function LoginPage() {
     const response = await loginUser(username, password);
     if (response.token) {
       alert("Login successful! id: " + response.userId);
+      localStorage.setItem('token', response.token);
       navigate('/dashboard', { state: { userId: response.userId } });
     } else {
       alert("Login failed!");
