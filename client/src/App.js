@@ -1,9 +1,9 @@
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import LoginPage from './LoginPage';
-import Dashboard from './Dashboard';
-import RegistrationPage from './RegistrationPage';
-import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import './App.css';
+import Dashboard from './pages/Dashboard';
+import LoginPage from './pages/LoginPage';
+import RegistrationPage from './pages/RegistrationPage';
 
 function App() {
   return (

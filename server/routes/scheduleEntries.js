@@ -47,11 +47,10 @@ router.post(
     }
     
     
-    res.status(200).send("Saved successfully.");
+    res.status(200).json({ message: "Saved successfully." });
   } catch (err) {
-    await tx.rollback();
     console.error(err);
-    res.status(500).send("Failed to save schedule.");
+    res.status(500).json({message: "Failed to save schedule." } );
   }
   }
 );

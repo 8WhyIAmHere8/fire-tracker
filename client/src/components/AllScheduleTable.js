@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Accordion, Col, Row, Form } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import { createSchedule, fetchBuildings, fetchSchedulesByZone } from './api';
-import { Col, Row, Accordion } from 'react-bootstrap';
-import InlineMap from './Map';
+import { fetchBuildings, fetchSchedulesByZone } from '../api';
 
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
@@ -13,7 +12,7 @@ const zoneMap = {
   B: [8, 11, 9, 27, 13, 6],
   C: [30, 20, 19, 12, 25],
   D: [2, 15, 16],
-  E: [10, 21, 22], // Removed 13 to resolve duplication
+  E: [10, 21, 22], 
   F: [29, 28, 26, 14]
 };
 
@@ -24,8 +23,33 @@ const AllScheduleTable = ({ setHighlightedBuildings }) => {
   const [selectedBuildingId, setSelectedBuildingId] = useState(null);
   const [allScheduleData, setSchedule] = useState({});
   const [selectedWeek, setSelectedWeek] = useState();
+  
+  const getCurrentWeek = () => {
+      const now = new Date();
+      const year = now.getUTCFullYear();
+
+      
+      const jan4 = new Date(Date.UTC(year, 0, 4));
+      const dayOfWeek = jan4.getUTCDay() || 7; 
+      const firstThursday = new Date(jan4);
+      firstThursday.setUTCDate(jan4.getUTCDate() + (4 - dayOfWeek));
+
+
+      const currentThursday = new Date(now);
+      const currentDay = currentThursday.getUTCDay() || 7;
+      currentThursday.setUTCDate(currentThursday.getUTCDate() + (4 - currentDay));
+
+
+  const weekNumber = Math.floor(
+    (currentThursday - firstThursday) / (7 * 24 * 60 * 60 * 1000)
+  ) + 1;
+
+  return `${year}-W${weekNumber.toString().padStart(2, '0')}`;
+};
 
   useEffect(() => {
+    setSelectedWeek(getCurrentWeek());
+    console.log("Current week:", getCurrentWeek());
     const loadAll = async () => {
       const [buildingData, scheduleData] = await Promise.all([
         fetchBuildings(),
@@ -79,7 +103,7 @@ const handleSlotClick = (day, slot) => {
 };
 
   const onUserClick = (e, buildingId) => {
-    e.stopPropagation(); // Prevent row click
+    e.stopPropagation(); 
     setSelectedBuildingId(buildingId);
   };
 
@@ -87,13 +111,23 @@ const handleSlotClick = (day, slot) => {
     <Row>
       <Col>
         <h4 className="mb-3">University Schedule</h4>
-        <label className="mr-2 font-medium">Select week:</label>
-      <input
-        type="week"
-        value={selectedWeek}
-        onChange={e => setSelectedWeek(e.target.value)}
-        className="border p-1 rounded"
-      />
+              <Form className="mb-3">
+        <Form.Group as={Row} controlId="formWeek">
+  <Form.Label column sm="2" className="fw-bold">
+    Select week:
+  </Form.Label>
+  <Col sm="7">
+    <div style={{ position: 'relative', maxWidth: 200 }}>
+              <Form.Control
+                type="week"
+                style={{ height: '38px', cursor: 'pointer', width: 170}}
+                value={selectedWeek || ""}
+                onChange={e => setSelectedWeek(e.target.value)}
+              />
+            </div>
+  </Col>
+</Form.Group>
+      </Form>
         <Accordion defaultActiveKey="0" alwaysOpen>
           {days.map((day, index) => (
             <Accordion.Item eventKey={index.toString()} key={day} className="mb-3">

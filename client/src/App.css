@@ -25,7 +25,24 @@
 }
 
 .App-link {
-  color: #61dafb;
+  color: #60225E;
+  padding: 0% 0% 0% 0%;
+}
+.Button {
+  background-color: #60225E;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+}
+.accordion-button {
+  background-color: #60225E !important; /* Change to your desired color */
+  color: #fff !important; /* Change text color */
 }
 
 @keyframes App-logo-spin {

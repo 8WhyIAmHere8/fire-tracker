@@ -1,5 +1,5 @@
 import React from 'react';
-import uoWmap from './uoWmap.PNG'; 
+import uoWmap from '../uoWmap.PNG'; 
 const InlineMap = ({ highlightedBuildings },) => {
     console.log("highlightedBuildings", highlightedBuildings);   
     const buildings =[
