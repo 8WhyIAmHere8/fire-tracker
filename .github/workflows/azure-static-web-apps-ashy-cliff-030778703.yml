@@ -19,6 +19,12 @@ jobs:
         with:
           submodules: true
           lfs: false
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -26,10 +32,8 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_ASHY_CLIFF_030778703 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          ###### ✅ Fix: Correct app and output locations ######
-          app_location: "client"        # ✅ Points to React app
-          output_location: "build" # ✅ Built React files
-          ###### End of Repository/Build Configurations ######
+          app_location: "client"
+          output_location: "build"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
