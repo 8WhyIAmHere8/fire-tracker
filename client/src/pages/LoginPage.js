@@ -16,7 +16,7 @@ function LoginPage() {
       setBackendMessage(message);
     }
     getBackendMessage();
-  }, []);
+  }, [setBackendMessage]);
 
   const handleRegister = async () => {
     navigate('/register');

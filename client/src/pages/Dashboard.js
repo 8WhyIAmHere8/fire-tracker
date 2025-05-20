@@ -4,9 +4,9 @@ import { Button, Card, Col, Container, Row } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 
 import { fetchBuildings, fetchSchedules } from '../api.js';
+import AllScheduleTable from '../components/AllScheduleTable.js';
 import InlineMap from '../components/Map.js';
 import ScheduleTable from '../components/personalScheduleTable.js';
-import AllScheduleTable from '../components/AllScheduleTable.js';
 
 const Dashboard = () => {
   const location = useLocation();
@@ -18,19 +18,17 @@ const Dashboard = () => {
   const [schedules, setSchedules] = useState([]);
 
   useEffect(() => {
-    if (userId) loadSchedules();
-    loadBuildings();
+    const fetchData = async () => {
+      if (userId) {
+        const scheduleData = await fetchSchedules(userId);
+        setSchedules(scheduleData);
+      }
+      const buildingData = await fetchBuildings();
+      setBuildings(buildingData);
+    };
+    fetchData();
   }, [userId]);
 
-  const loadBuildings = async () => {
-    const data = await fetchBuildings();
-    setBuildings(data);
-  };
-
-  const loadSchedules = async () => {
-    const data = await fetchSchedules(userId);
-    setSchedules(data);
-  };
   const handleLogout = () => {
     localStorage.removeItem('token');
     window.location.href = '/';
