@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; 
 
 import { fetchBuildings, fetchSchedules } from '../api.js';
 import AllScheduleTable from '../components/AllScheduleTable.js';
@@ -10,7 +10,9 @@ import ScheduleTable from '../components/personalScheduleTable.js';
 
 const Dashboard = () => {
   const location = useLocation();
-  const userId = location.state?.userId;
+  const navigate = useNavigate();
+  const userId = location.state?.userId || localStorage.getItem('userId');
+  const token = localStorage.getItem('token');
 
   const [buildings, setBuildings] = useState([]);
   const [highlightedBuildings, setHighlightedBuildings] = useState([]);
@@ -18,6 +20,9 @@ const Dashboard = () => {
   const [schedules, setSchedules] = useState([]);
 
   useEffect(() => {
+     if (!userId || !token) {
+      navigate('/');
+    }
     const fetchData = async () => {
       if (userId) {
         const scheduleData = await fetchSchedules(userId);
@@ -27,7 +32,7 @@ const Dashboard = () => {
       setBuildings(buildingData);
     };
     fetchData();
-  }, [userId]);
+  }, [userId, token, navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');

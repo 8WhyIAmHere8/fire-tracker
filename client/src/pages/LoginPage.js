@@ -27,6 +27,7 @@ function LoginPage() {
     if (response.token) {
       alert("Login successful! id: " + response.userId);
       localStorage.setItem('token', response.token);
+      localStorage.setItem('userId', response.userId); 
       navigate('/dashboard', { state: { userId: response.userId } });
     } else {
       alert("Login failed!");
