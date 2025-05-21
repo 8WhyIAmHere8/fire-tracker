@@ -10,7 +10,7 @@ import ScheduleTable from '../components/personalScheduleTable.js';
 
 const Dashboard = () => {
   const location = useLocation();
-  const userId = location.state?.userId;
+  const userId = location.state?.userId || localStorage.getItem('userId');
 
   const [buildings, setBuildings] = useState([]);
   const [highlightedBuildings, setHighlightedBuildings] = useState([]);
