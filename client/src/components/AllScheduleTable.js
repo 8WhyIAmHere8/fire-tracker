@@ -1,9 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
-import { Accordion, Col, Row, Form } from 'react-bootstrap';
+import { Accordion, Button, Col, Form, Row } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
 import { fetchBuildings, fetchSchedulesByZone } from '../api';
-
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const slots = ["9-11", "11-13", "13-15", "15-17"];
@@ -24,6 +23,7 @@ const AllScheduleTable = ({ setHighlightedBuildings }) => {
   const [selectedBuildingId, setSelectedBuildingId] = useState(null);
   const [allScheduleData, setSchedule] = useState({});
   const [selectedWeek, setSelectedWeek] = useState();
+  const [refreshKey, setRefreshKey] = useState(0); // Add refresh key state
   
   const getCurrentWeek = () => {
       const now = new Date();
@@ -84,7 +84,7 @@ const AllScheduleTable = ({ setHighlightedBuildings }) => {
     };
 
     loadAll();
-  }, [setHighlightedBuildings, selectedWeek, userId]);
+  }, [setHighlightedBuildings, selectedWeek, userId, refreshKey]);
 
 const handleSlotClick = (day, slot) => {
     const slotData = allScheduleData[day]?.[slot] || {};
@@ -112,23 +112,34 @@ const handleSlotClick = (day, slot) => {
     <Row>
       <Col>
         <h4 className="mb-3">University Schedule</h4>
-              <Form className="mb-3">
-        <Form.Group as={Row} controlId="formWeek">
-  <Form.Label column sm="2" className="fw-bold">
-    Select week:
-  </Form.Label>
-  <Col sm="7">
-    <div style={{ position: 'relative', maxWidth: 200 }}>
-              <Form.Control
-                type="week"
-                style={{ height: '38px', cursor: 'pointer', width: 170}}
-                value={selectedWeek || ""}
-                onChange={e => setSelectedWeek(e.target.value)}
-              />
-            </div>
-  </Col>
-</Form.Group>
-      </Form>
+        <h5 className="mb-3">Click on a time slot to view map locations</h5>
+        <div className="d-flex align-items-center mb-3">
+          <Form className="me-3 flex-grow-1">
+            <Form.Group as={Row} controlId="formWeek">
+              <Form.Label column sm="2" className="fw-bold">
+                Select week:
+              </Form.Label>
+              <Col sm="7">
+                <div style={{ position: 'relative', maxWidth: 200 }}>
+                  <Form.Control
+                    type="week"
+                    style={{ height: '38px', cursor: 'pointer', width: 170 }}
+                    value={selectedWeek || ""}
+                    onChange={e => setSelectedWeek(e.target.value)}
+                  />
+                </div>
+              </Col>
+            </Form.Group>
+          </Form>
+          <Button
+            variant="outline-primary"
+            onClick={() => setRefreshKey(prev => prev + 1)}
+            style={{ height: '38px' }}
+            title="Refresh Table"
+          >
+            &#x21bb; Refresh
+          </Button>
+        </div>
         <Accordion defaultActiveKey="0" alwaysOpen>
           {days.map((day, index) => (
             <Accordion.Item eventKey={index.toString()} key={day} className="mb-3">
@@ -150,7 +161,20 @@ const handleSlotClick = (day, slot) => {
                         onClick={() => handleSlotClick(day, slot)}
                         style={{ cursor: "pointer" }}
                       >
-                        <td>{slot}</td>
+                        <td
+                          style={{
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                            color: "#60225E",
+                            fontWeight: "bold",
+                            background: "#e7f1ff"
+                          }}
+                          title="Click to highlight buildings on map"
+                          onMouseOver={e => (e.currentTarget.style.background = "#cfe2ff")}
+                          onMouseOut={e => (e.currentTarget.style.background = "#e7f1ff")}
+                        >
+                          {slot}
+                        </td>
                         {Object.keys(zoneMap).map(zone => {
                           const usersInZone = allScheduleData[day]?.[slot]?.[zone] || [];
                           return (

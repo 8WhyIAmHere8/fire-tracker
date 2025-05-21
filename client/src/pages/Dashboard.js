@@ -58,7 +58,6 @@ const Dashboard = () => {
         <Col md={7}>
           <Card className="shadow-sm">
             <Card.Body>
-              <h5 className="mb-3">All Schedules</h5>
               <AllScheduleTable setHighlightedBuildings={setHighlightedBuildings} />
             </Card.Body>
           </Card>
