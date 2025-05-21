@@ -35,7 +35,7 @@ resource "azurerm_mssql_database" "warden_db" {
   collation           = "SQL_Latin1_General_CP1_CI_AS"
   max_size_gb         = 2
   
-  sku_name            = "Basic"
+  sku_name            = "Basic" # Basic tier, 2GB max size
   depends_on = [azurerm_mssql_server.warden_sql_server]
 
 }
@@ -48,13 +48,13 @@ resource "azurerm_mssql_firewall_rule" "allow_azure_services" {
   end_ip_address      = "0.0.0.0"
 }
 
-#  Create Azure App Service (Express Backend)
+# Azure App Service (Express Backend)
 resource "azurerm_service_plan" "warden_service_plan" {
   name                = "${var.project_name}-plan"
   resource_group_name = azurerm_resource_group.warden_rg.name
   location            = var.region
   os_type             = "Linux"
-  sku_name            = "B1" # Free tier doesn't support custom domains
+  sku_name            = "F1" # free tier, NO autoscaling or multiple instance support 
 }
 #  Create Azure App Service (For Express Backend)
 resource "azurerm_linux_web_app" "warden_backend" {
@@ -80,7 +80,7 @@ resource "azurerm_static_web_app" "warden_frontend" {
   name                = "${var.project_name}-frontend"
   resource_group_name = azurerm_resource_group.warden_rg.name
   location            = "westeurope"
-  sku_tier            = "Free"
+  sku_tier            = "Free" # free tier, NO autoscaling or multiple instance support 
 
   repository_url        = "https://github.com/8WhyIAmHere8/fire-tracker"
   repository_branch = "main"
