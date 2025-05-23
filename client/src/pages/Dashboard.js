@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
-import { useLocation, useNavigate } from 'react-router-dom'; 
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { fetchBuildings, fetchSchedules } from '../api.js';
 import AllScheduleTable from '../components/AllScheduleTable.js';
@@ -19,13 +19,30 @@ const Dashboard = () => {
   const [startTime, setStartTime] = useState('');
   const [schedules, setSchedules] = useState([]);
 
+  const getCurrentWeek = () => {
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const jan4 = new Date(Date.UTC(year, 0, 4));
+    const dayOfWeek = jan4.getUTCDay() || 7;
+    const firstThursday = new Date(jan4);
+    firstThursday.setUTCDate(jan4.getUTCDate() + (4 - dayOfWeek));
+    const currentThursday = new Date(now);
+    const currentDay = currentThursday.getUTCDay() || 7;
+    currentThursday.setUTCDate(currentThursday.getUTCDate() + (4 - currentDay));
+    const weekNumber = Math.floor(
+      (currentThursday - firstThursday) / (7 * 24 * 60 * 60 * 1000)
+    ) + 1;
+    return `${year}-W${weekNumber.toString().padStart(2, '0')}`;
+  };
+
   useEffect(() => {
      if (!userId || !token) {
       navigate('/');
     }
     const fetchData = async () => {
       if (userId) {
-        const scheduleData = await fetchSchedules(userId);
+        const week = getCurrentWeek();
+        const scheduleData = await fetchSchedules(week, userId);
         setSchedules(scheduleData);
       }
       const buildingData = await fetchBuildings();

@@ -1,4 +1,5 @@
-const API_BASE_URL = "https://fire-warden-tracker-backend.azurewebsites.net";
+// const API_BASE_URL = "https://fire-warden-tracker-backend.azurewebsites.net";
+const API_BASE_URL = "http://localhost:5000";
 export async function fetchHealthCheck() {
   try {
     const response = await fetch(`${API_BASE_URL}/api/health`);
@@ -54,3 +55,18 @@ export async function fetchBuildings() {
   const res = await fetch(`${API_BASE_URL}/api/buildings`);
   return res.json();
 }
+
+export async function updateUserInfo(userId, FullName, staffNumber) {
+  const response = await fetch(`${API_BASE_URL}/api/auth/update`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, FullName, staffNumber })
+  });
+  return response.json();
+}
+
+export async function fetchUserInfo(userId) {
+  const response = await fetch(`${API_BASE_URL}/api/auth/user/${userId}`);
+  return response.json();
+}
+

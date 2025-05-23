@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Col, Form, Row, Table } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import { createSchedule, fetchBuildings, fetchSchedules } from '../api'
+import { createSchedule, fetchBuildings, fetchSchedules, updateUserInfo, fetchUserInfo } from '../api';
 
 const days = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 const slots = ["9-11", "11-13", "13-15", "15-17"];
@@ -17,6 +17,8 @@ const ScheduleTable = () => {
     ]))
   );
   const [editing, setEditing] = useState(null);
+  const [userInfo, setUserInfo] = useState({ FullName: "", staffNumber: "" });
+  const [editingUser, setEditingUser] = useState(false);
 
   const loadBuildings = async () => {
     const data = await fetchBuildings();
@@ -111,9 +113,28 @@ const ScheduleTable = () => {
     }
   };
 
+ 
+  
+  const handleUserInfoChange = (e) => {
+    const { name, value } = e.target;
+    setUserInfo(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleUserInfoSave = async () => {
+    const result = await updateUserInfo(userId, userInfo.FullName, userInfo.staffNumber);
+    if (result.message) {
+      alert("User info updated!");
+      setEditingUser(false);
+    } else {
+      alert("Error updating user info");
+    }
+  };
+
   useEffect(() => {
     setSelectedWeek(getCurrentWeek());
     console.log("Current week:", getCurrentWeek());
+    fetchUserInfo(userId).then(data => setUserInfo({ FullName: data.FullName, staffNumber: data.staffNumber }));
+    console.log("User info:", userId, fetchUserInfo(userId));
   }, []);
 
   useEffect(() => {
@@ -128,6 +149,38 @@ const ScheduleTable = () => {
 
   return (
     <div>
+      <div className="mb-3">
+        {editingUser ? (
+          <Form as={Row} className="align-items-center">
+            <Col sm="4">
+              <Form.Control
+                name="FullName"
+                value={userInfo.FullName}
+                onChange={handleUserInfoChange}
+                placeholder="Full Name"
+              />
+            </Col>
+            <Col sm="3">
+              <Form.Control
+                name="staffNumber"
+                value={userInfo.staffNumber}
+                onChange={handleUserInfoChange}
+                placeholder="Staff Number"
+              />
+            </Col>
+            <Col sm="2">
+              <Button variant="success" className="Button" size="sm" onClick={handleUserInfoSave}>Save</Button>
+              <Button variant="secondary" size="sm" onClick={() => setEditingUser(false)} className="ms-2">Cancel</Button>
+            </Col>
+          </Form>
+        ) : (
+          <div>
+            <span className="fw-bold">Full Name:</span> {userInfo.FullName} &nbsp;&nbsp;
+            <span className="fw-bold">Staff Number:</span> {userInfo.staffNumber} &nbsp;&nbsp;
+            <Button variant="outline-primary" size="sm" onClick={() => setEditingUser(true)}>Edit</Button>
+          </div>
+        )}
+      </div>
       <Form className="mb-3">
       <Form.Group as={Row} controlId="formWeek">
   <Form.Label column sm="2" className="fw-bold">

@@ -54,7 +54,7 @@ resource "azurerm_service_plan" "warden_service_plan" {
   resource_group_name = azurerm_resource_group.warden_rg.name
   location            = var.region
   os_type             = "Linux"
-  sku_name            = "F1" # free tier, NO autoscaling or multiple instance support 
+  sku_name            = "F1" # free tier, NO autoscaling or multiple instance support
 }
 #  Create Azure App Service (For Express Backend)
 resource "azurerm_linux_web_app" "warden_backend" {

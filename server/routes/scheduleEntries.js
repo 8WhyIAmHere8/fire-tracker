@@ -7,7 +7,7 @@ router.post(
   "/add",
 
   async (req, res) => {
-  const entries = req.body; // Expecting array of { week, day, slot, userId, buildingId }
+  const entries = req.body; 
 
   try {
     const pool = await sql.connect(process.env.DATABASE_URL);
@@ -15,7 +15,6 @@ router.post(
     const result = await pool
     for (const entry of entries) {
       if (!entry.buildingId) {
-        // User cleared this cell — delete it
         await pool.request()
           .input("Week", sql.NVarChar(10), entry.week)
           .input("Day", sql.NVarChar(10), entry.day)
@@ -26,7 +25,6 @@ router.post(
             WHERE [Week] = @Week AND [Day] = @Day AND Slot = @Slot AND userId = @userId
           `);
       } else {
-        // Normal insert/update
         await pool.request()
           .input("Week", sql.NVarChar(10), entry.week)
           .input("Day", sql.NVarChar(10), entry.day)

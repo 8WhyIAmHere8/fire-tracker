@@ -7,16 +7,8 @@ import dawg from '../logo.png';
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [setBackendMessage] = useState("Loading...");
   const navigate = useNavigate();
-
-  useEffect(() => {
-    async function getBackendMessage() {
-      const message = await fetchHealthCheck();
-      setBackendMessage(message);
-    }
-    getBackendMessage();
-  }, [setBackendMessage]);
+;
 
   const handleRegister = async () => {
     navigate('/register');
@@ -28,7 +20,7 @@ function LoginPage() {
       alert("Login successful! id: " + response.userId);
       localStorage.setItem('token', response.token);
       localStorage.setItem('userId', response.userId); 
-      navigate('/dashboard', { state: { userId: response.userId } });
+      navigate('/dashboard', { state: { userId: response.userId, } });
     } else {
       alert("Login failed!");
     }

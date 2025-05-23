@@ -37,7 +37,7 @@ router.post(
             .input("staffNumber", sql.VarChar, staffNumber)
             .input("FullName", sql.VarChar, FullName)
             .query("INSERT INTO users (username, password_hash, staffNumber, FullName) VALUES (@username, @password_hash, @staffNumber, @FullName)");
-        res.status(201).json({ message: "User registered successfully!" });
+        res.status(201).json({ success: true, message: "User registered successfully!" });
         console.log("3", result);
         } catch (error) {
         res.status(500).json({ error: "User already exists or DB error" });
@@ -76,4 +76,44 @@ router.post(
   }
 );
 
+// Update user info
+router.put(
+  "/update",
+  [
+    body("userId").notEmpty(),
+    body("FullName").notEmpty(),
+    body("staffNumber").notEmpty(),
+  ],
+  async (req, res) => {
+    const { userId, FullName, staffNumber } = req.body;
+    try {
+      const pool = await sql.connect(process.env.DATABASE_URL);
+      await pool
+        .request()
+        .input("userId", sql.Int, userId)
+        .input("FullName", sql.VarChar, FullName)
+        .input("staffNumber", sql.VarChar, staffNumber)
+        .query("UPDATE users SET FullName = @FullName, staffNumber = @staffNumber WHERE id = @userId");
+      res.json({ message: "User info updated" });
+    } catch (error) {
+      res.status(500).json({ error: "Database error" });
+    }
+  }
+);
+router.get("/user/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pool = await sql.connect(process.env.DATABASE_URL);
+    const result = await pool
+      .request()
+      .input("id", sql.Int, id)
+      .query("SELECT FullName, staffNumber FROM users WHERE id = @id");
+    if (!result.recordset.length) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(result.recordset[0]);
+  } catch (error) {
+    res.status(500).json({ error: "Database error" });
+  }
+});
 module.exports = router;
