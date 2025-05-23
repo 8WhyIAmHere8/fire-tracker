@@ -16,7 +16,7 @@ app.use((req, res, next) => {
 });
 
 // Ensure we listen on process.env.PORT (required by Azure)
-const PORT = process.env.PORT || 5000; //change when on AZURRE!!!!! 3000
+const PORT = process.env.PORT || 3000; //change when on AZURRE!!!!! 3000
 
 app.get("/api/health", (req, res) => {
   res.json({ message: "API is running!" });
