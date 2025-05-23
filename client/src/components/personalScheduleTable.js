@@ -135,7 +135,7 @@ const ScheduleTable = () => {
     console.log("Current week:", getCurrentWeek());
     fetchUserInfo(userId).then(data => setUserInfo({ FullName: data.FullName, staffNumber: data.staffNumber }));
     console.log("User info:", userId, fetchUserInfo(userId));
-  }, []);
+  }, [userId]);
 
   useEffect(() => {
     const loadSchedules = async () => {
