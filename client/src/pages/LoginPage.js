@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Button, Card, Col, Container, Form, Row } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { fetchHealthCheck, loginUser } from '../api';
+import {  loginUser } from '../api';
 import dawg from '../logo.png';
 
 function LoginPage() {
